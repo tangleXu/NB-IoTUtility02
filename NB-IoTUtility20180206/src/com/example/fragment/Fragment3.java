@@ -1,5 +1,8 @@
 package com.example.fragment;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -14,12 +17,18 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.AudioManager;
 import android.media.SoundPool;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,8 +36,10 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.app.Activity;
 
 import com.example.fragment.ReportSignalInfo;
 import com.example.nb_iotutility.MainActivity;
@@ -38,12 +49,17 @@ import com.example.nb_iotutility.R;
 
 public class Fragment3 extends Fragment implements OnClickListener{
 	protected static final int SHOW_RESPONSE = 0;
+	private static final int RESULT_OK = -1;
+	private static final int REQUEST_ORIGINAL = 0;
 	private View curView;
 	SoundPool sp;
 	HashMap<Integer, Integer> spMap;
 	private MyImageView miv;
 	public MainActivity ma;
-	
+	private String sdPath;//SD卡的路径 
+	private String picPath;//图片存储路径 
+	private Button mBtnTakePhoto, mBtnPositioning, mBtnUpload;
+	private ImageView mImageView; 
 //	private static final int REQUEST_ENABLE_BT = 0;
 //	private static final int NET_READ_TIMEOUT_MILLIS = 0;
 //	private static final int NET_CONNECT_TIMEOUT_FILLIS = 0;
@@ -88,9 +104,20 @@ public class Fragment3 extends Fragment implements OnClickListener{
 				}
 				
 		};
-		
+        //Get SD path.
+		sdPath = Environment.getExternalStorageDirectory().getPath(); 
+        picPath = sdPath + "/" + "NB-IoT_SignalInfo.png"; 
+        mImageView = (ImageView) curView.findViewById(R.id.ivPhoto);
+        
 		btnQueryNBInfo = (Button) curView.findViewById(R.id.btnF3InfoSearch);
 		btnQueryNBInfo.setOnClickListener(this);
+		//mBtnTakePhoto, mBtnPositioning, mBtnUpload;
+		mBtnTakePhoto = (Button) curView.findViewById(R.id.btnF3TakePhoto);
+		mBtnTakePhoto.setOnClickListener(this);
+		mBtnPositioning = (Button) curView.findViewById(R.id.btnF3Positioning);
+		mBtnPositioning.setOnClickListener(this);
+		mBtnUpload = (Button) curView.findViewById(R.id.btnF3Upload);
+		mBtnUpload.setOnClickListener(this);
 		
 		/////////////////////////////////////////////////////////////////////////////
 		m_tvEARFCN = (TextView) curView.findViewById(R.id.tvF3EARFCN);
@@ -118,7 +145,7 @@ public class Fragment3 extends Fragment implements OnClickListener{
 		//InitBluetooth();
 		
 		//miv = (MyImageView) curView.findViewById(R.id.myImgView01);
-		//rsi = new ReportSignalInfo(this.getActivity());
+		rsi = new ReportSignalInfo(ma);
 		
 		return curView;
 	}
@@ -278,6 +305,25 @@ public class Fragment3 extends Fragment implements OnClickListener{
 			mmStrCmd = "";
 			
 			break;
+		case R.id.btnF3TakePhoto:
+		      Intent intent2 = new Intent(MediaStore.ACTION_IMAGE_CAPTURE); 
+		      Uri uri = Uri.fromFile(new File(picPath)); 
+		      //为拍摄的图片指定一个存储的路径 
+		      intent2.putExtra(MediaStore.EXTRA_OUTPUT, uri); 
+		      startActivityForResult(intent2, REQUEST_ORIGINAL); 			
+			break;
+		case R.id.btnF3Positioning:
+			//TODO: Tomorrow.
+			
+			break;
+		case R.id.btnF3Upload:
+			Toast.makeText(this.getActivity().getApplicationContext(), "Send scan signal!", Toast.LENGTH_LONG).show();
+	        rsi.setDevName("NB-PoC001","ERICSSON SH WILD-C","31.2364733460","121.3627737870");
+	        rsi.setNetworkInfo(mStrMCC,mStrMNC, mStrTAC, mStrGCELLID, mStrSINR, mStrRSRP, mStrRSRQ, mStrRSSI);
+	        rsi.setPHY(mStrBAND, mStrEARFCN, mStrCAT, mStrPCI);
+	        rsi.setEPS("0.0.0.0", "Pending");		
+	        rsi.sendRequestWithHttpClient();
+			
 		default:
 			break;
 		}
@@ -309,5 +355,66 @@ public class Fragment3 extends Fragment implements OnClickListener{
 		//}
 		return "NA";
 		
-	}		
+	}
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
+		super.onActivityResult(requestCode, resultCode, data);
+		
+		Log.d("ARIC","Save photo."+resultCode);
+		
+		   if (resultCode == RESULT_OK) { 
+			        //FileInputStream fis = null; 
+			        try { 
+			          Log.e("ARIC",picPath); 
+			          //把图片转化为字节流 
+			          //fis = new FileInputStream(picPath); 
+			          //把流转化图片 
+			          //Bitmap bitmap = BitmapFactory.decodeStream(fis); 
+			          Bitmap bitmap = getBitmapByWidth(picPath,100,0);
+			          mImageView.setImageBitmap(bitmap); 
+			          //bitmap.recycle();
+			        }finally{ 
+			        } 
+			    
+			    } 
+		   
+	}
+	public Bitmap getBitmapByWidth(String localImagePath, int width, int addedScaling) {
+        if (TextUtils.isEmpty(localImagePath)) {
+            return null;
+        }
+
+        Bitmap temBitmap = null;
+
+        try {
+            BitmapFactory.Options outOptions = new BitmapFactory.Options();
+
+            // 设置该属性为true，不加载图片到内存，只返回图片的宽高到options中。
+            outOptions.inJustDecodeBounds = true;
+
+            // 加载获取图片的宽高
+            BitmapFactory.decodeFile(localImagePath, outOptions);
+
+            int height = outOptions.outHeight;
+
+            if (outOptions.outWidth > width) {
+                // 根据宽设置缩放比例
+                outOptions.inSampleSize = outOptions.outWidth / width + 1 + addedScaling;
+                outOptions.outWidth = width;
+
+                // 计算缩放后的高度
+                height = outOptions.outHeight / outOptions.inSampleSize;
+                outOptions.outHeight = height;
+            }
+
+            // 重新设置该属性为false，加载图片返回
+            outOptions.inJustDecodeBounds = false;
+            temBitmap = BitmapFactory.decodeFile(localImagePath, outOptions);
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
+
+        return temBitmap;
+    }
 }
