@@ -36,7 +36,7 @@ public class Fragment5 extends Fragment implements OnClickListener{
 			,"AT+COPS?","AT+COPS=1,2,\"46000\"","AT+MODODR?",
 			"AT+LTEOPMOD?","AT+LCECELLINFO","AT+LSCELLINFO",
 			"AT+CPSMS?","AT+CEDRXS?","AT+CEDRXRDP","AT+CPIN",
-			"AT+CGDCONT?","AT+LSIPCALL?"};
+			"AT+CGDCONT?","AT+LSIPCALL?","AT+CGDCONT=1,\"IP\",\"cmnet\""};
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {	

@@ -22,6 +22,7 @@ public class NBSignalPgsBar extends View {
 		// TODO Auto-generated constructor stub
 		mPercent = (float) 50.0;
 	}
+	
 	public NBSignalPgsBar(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		// TODO Auto-generated constructor stub
@@ -29,7 +30,19 @@ public class NBSignalPgsBar extends View {
 		mCaption = Float.toString(mPercent);
 	}
 	
-
+	public void setPercent(float pcnt)
+	{
+		
+		mPercent = pcnt;
+		//mCaption = Float.toString(mPercent);
+		this.invalidate();
+	}
+	
+	public void setText(String ss){
+		mCaption = ss;
+		this.invalidate();
+	}
+	
 	//private Color mBgColor;
 	
 //	public NBSignalPgsBar(Context context) {
@@ -45,7 +58,7 @@ public class NBSignalPgsBar extends View {
 		// TODO Auto-generated method stub
 		super.onDraw(canvas);
 		//canvas.drawColor(Color.rgb(33, 169, 63));
-		canvas.drawColor(Color.rgb(51, 51, 51));
+		canvas.drawColor(Color.rgb(81, 81, 81));
 		
 		Paint paint = new Paint();
 		if(mPercent>0 && mPercent<25)
@@ -66,7 +79,8 @@ public class NBSignalPgsBar extends View {
         Paint textPaint = new Paint();  
         textPaint.setColor(Color.rgb(222, 222, 222));
         textPaint.setStrokeWidth(3);  
-        textPaint.setTextSize(20);  
+        textPaint.setTextSize(20);
+        
         //textPaint.setStyle(Paint.Style.FILL);  
         //该方法即为设置基线上那个点究竟是left,center,还是right  这里我设置为center  
         textPaint.setTextAlign(Paint.Align.CENTER);  

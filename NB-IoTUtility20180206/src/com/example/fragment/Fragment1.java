@@ -78,6 +78,7 @@ public class Fragment1 extends Fragment implements OnClickListener{
 		ma = (MainActivity) this.getActivity();
 		if(arg0.getId() == R.id.btnAppExit)
 		{
+			ma.bis.closeBt();
 			ma.finish();
 		}
 		

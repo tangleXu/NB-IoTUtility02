@@ -75,7 +75,7 @@ public class MainActivity<Content> extends FragmentActivity implements OnBtInter
 	public Handler handler;
 	public Handler fragmentHandler;
 	public Handler fragmentExpertHandler;
-	
+	public Handler fragmentTerminalHandler;
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 	    this.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -91,6 +91,7 @@ public class MainActivity<Content> extends FragmentActivity implements OnBtInter
 		
 		fragmentHandler = null;
 		fragmentExpertHandler = null;
+		fragmentTerminalHandler = null;
 		
         handler = new Handler() {
 
@@ -185,7 +186,8 @@ public class MainActivity<Content> extends FragmentActivity implements OnBtInter
 
 	public void onBTRecvSuccess(String recv) {
 		// TODO Auto-generated method stub
-		showMsgBox("BT Recv success:"+recv);
+		//showMsgBox("BT Recv success:"+recv);
+		showMsgBox(recv);
 	}
 
 	public void onBTRecvFailure() {
@@ -216,7 +218,13 @@ public class MainActivity<Content> extends FragmentActivity implements OnBtInter
 			}else if(tabIdx == 4){
 				if(fragmentExpertHandler != null)
 					fragmentExpertHandler.sendMessage(msg);				
-			}else
+			}else if(tabIdx == 2)
+			{
+				if(fragmentTerminalHandler != null)
+					fragmentTerminalHandler.sendMessage(msg);
+				
+			}
+			else
 			{
 				
 			}

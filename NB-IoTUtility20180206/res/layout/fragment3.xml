@@ -33,7 +33,6 @@
         android:textSize="10sp"
         android:text="PCI" />
     <TextView
-        android:id="@+id/textView1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="#828282"
@@ -57,6 +56,7 @@
         android:background="#424242"
         android:orientation="horizontal" >
     <TextView
+        android:id="@+id/tvF3EARFCN"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textColor="#cdcdcd"
@@ -65,6 +65,7 @@
         android:textSize="10sp"
         android:text="2250" />
     <TextView
+        android:id="@+id/tvF3PCI"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -73,13 +74,13 @@
         android:textSize="10sp"
         android:text="97" />
     <com.example.nb_iotutility.NBSignalPgsBar
-            android:id="@+id/nBSignalPgsBar1"
+            android:id="@+id/nbSPB_rsrp"
             android:layout_weight="1"
             android:layout_width="fill_parent"
             android:layout_height="12dp" />
 
     <com.example.nb_iotutility.NBSignalPgsBar
-            android:id="@+id/nBSignalPgsBar2"
+            android:id="@+id/nbSPB_sinr"
             android:layout_weight="1"
             android:layout_width="fill_parent"
             android:layout_height="12dp" />
@@ -131,6 +132,7 @@
         android:background="#424242"
         android:orientation="horizontal" >
     <TextView
+        android:id="@+id/tvF3PLMN"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textColor="#cdcdcd"
@@ -139,6 +141,7 @@
         android:textSize="10sp"
         android:text="460/012" />
     <TextView
+        android:id="@+id/tvF3BAND"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -147,6 +150,7 @@
         android:textSize="10sp"
         android:text="804" />
     <TextView
+        android:id="@+id/tvF3TAC"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textColor="#cdcdcd"
@@ -155,6 +159,7 @@
         android:textSize="10sp"
         android:text="-" />
 	<TextView
+	    android:id="@+id/tvF3GCELLID"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textColor="#cdcdcd"
@@ -197,15 +202,16 @@
 	        android:layout_gravity="right"
 	        android:gravity="right"
 	        android:textSize="10sp"
-	        android:text="NB-IoT Band:" />        
+	        android:text="RAT:" />        
     <TextView
+        android:id="@+id/tvF3RAT"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:textColor="#cdcdcd"
         android:gravity="center"
         android:textSize="10sp"
-        android:text="8" />
+        android:text="NB-IoT" />
         
         </LinearLayout>
 	    <LinearLayout
@@ -227,6 +233,7 @@
 	        android:textSize="10sp"
 	        android:text="CAT:" />        
     <TextView
+        android:id="@+id/tvF3CAT"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -255,6 +262,7 @@
 	        android:textSize="10sp"
 	        android:text="NB-IoT RSRQ:" />        
         <com.example.nb_iotutility.NBSignalPgsBar
+            android:id="@+id/nbSPB_rsrq"
             android:layout_weight="1"
             android:layout_width="fill_parent"
             android:layout_height="15dp" />
@@ -279,6 +287,7 @@
 	        android:textSize="10sp"
 	        android:text="NB-IoT RSSI:" />        
         <com.example.nb_iotutility.NBSignalPgsBar
+            android:id="@+id/nbSPB_rssi"
             android:layout_weight="1"
             android:layout_width="fill_parent"
             android:layout_height="15dp" />
@@ -302,8 +311,9 @@
 	        android:layout_gravity="right"
 	        android:gravity="right"
 	        android:textSize="10sp"
-	        android:text="NB-IoT RSRQ:" />        
+	        android:text="NB-IoT RSRP:" />        
         <com.example.nb_iotutility.NBSignalPgsBar
+            android:id="@+id/nbSPB_rsrp2"
             android:layout_weight="1"
             android:layout_width="fill_parent"
             android:layout_height="15dp" />
@@ -316,56 +326,20 @@
 	        android:layout_gravity="center"
 	        android:gravity="center"
 	        android:textSize="15dp"
-	        android:text="LTE INTRA INFO(NB-IoT):" />
+	        android:text="LTE INFO(NB-IoT):" />
  	<TextView
+ 	        android:id="@+id/tvLTEINTRA"
 	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"
 	        android:textColor="#eee"
-	        android:layout_gravity="center"
-	        android:gravity="center"
+	        android:layout_gravity="left"
+	        android:gravity="left"
 	        android:textSize="10sp"
-	        android:text="PCI[0]:1 RSRQ[0]:-7 RSRP[0]:-193 RSSI[0]:-82 RXLEV[0]:22" />
- 	<TextView
-	        android:layout_width="fill_parent"
-	        android:layout_height="wrap_content"
-	        android:textColor="#eee"
-	        android:layout_gravity="center"
-	        android:gravity="center"
-	        android:textSize="10sp"
-	        android:text="PCI[0]:1 RSRQ[0]:-7 RSRP[0]:-193 RSSI[0]:-82 RXLEV[0]:22" />
- 	<TextView
-	        android:layout_width="fill_parent"
-	        android:layout_height="wrap_content"
-	        android:textColor="#eee"
-	        android:layout_gravity="center"
-	        android:gravity="center"
-	        android:textSize="10sp"
-	        android:text="PCI[0]:1 RSRQ[0]:-7 RSRP[0]:-193 RSSI[0]:-82 RXLEV[0]:22" />
- 	<TextView
-	        android:layout_width="fill_parent"
-	        android:layout_height="wrap_content"
-	        android:textColor="#eee"
-	        android:layout_gravity="center"
-	        android:gravity="center"
-	        android:textSize="10sp"
-	        android:text="PCI[0]:1 RSRQ[0]:-7 RSRP[0]:-193 RSSI[0]:-82 RXLEV[0]:22" />
- 	<TextView
-	        android:layout_width="fill_parent"
-	        android:layout_height="wrap_content"
-	        android:textColor="#eee"
-	        android:layout_gravity="center"
-	        android:gravity="center"
-	        android:textSize="10sp"
-	        android:text="PCI[0]:1 RSRQ[0]:-7 RSRP[0]:-193 RSSI[0]:-82 RXLEV[0]:22" />
- 	<TextView
-	        android:layout_width="fill_parent"
-	        android:layout_height="wrap_content"
-	        android:textColor="#eee"
-	        android:layout_gravity="center"
-	        android:gravity="center"
-	        android:textSize="10sp"
-	        android:text="PCI[0]:1 RSRQ[0]:-7 RSRP[0]:-193 RSSI[0]:-82 RXLEV[0]:22" />  	
- 	<TextView
+	        android:layout_marginLeft="10sp"
+			android:layout_marginRight="10sp"
+	        android:text="-" />
+ 	 	
+ <!-- 	<TextView
 	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"
 	        android:textColor="#eee"
@@ -374,50 +348,20 @@
 	        android:textSize="15dp"
 	        android:text="LTE INTER INFO(NB-IoT):" />    
  	<TextView
+ 	        android:id="@+id/tvLTEINTER"
 	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"
 	        android:textColor="#eee"
 	        android:layout_gravity="center"
 	        android:gravity="center"
 	        android:textSize="10sp"
-	        android:text="PCI[0]:1 RSRQ[0]:-7 RSRP[0]:-193 RSSI[0]:-82 RXLEV[0]:22" />	  
- 	<TextView
-	        android:layout_width="fill_parent"
-	        android:layout_height="wrap_content"
-	        android:textColor="#eee"
-	        android:layout_gravity="center"
-	        android:gravity="center"
-	        android:textSize="10sp"
-	        android:text="PCI[0]:1 RSRQ[0]:-7 RSRP[0]:-193 RSSI[0]:-82 RXLEV[0]:22" />
- 	<TextView
-	        android:layout_width="fill_parent"
-	        android:layout_height="wrap_content"
-	        android:textColor="#eee"
-	        android:layout_gravity="center"
-	        android:gravity="center"
-	        android:textSize="10sp"
-	        android:text="PCI[0]:1 RSRQ[0]:-7 RSRP[0]:-193 RSSI[0]:-82 RXLEV[0]:22" />
- 	<TextView
-	        android:layout_width="fill_parent"
-	        android:layout_height="wrap_content"
-	        android:textColor="#eee"
-	        android:layout_gravity="center"
-	        android:gravity="center"
-	        android:textSize="10sp"
-	        android:text="PCI[0]:1 RSRQ[0]:-7 RSRP[0]:-193 RSSI[0]:-82 RXLEV[0]:22" />
- 	<TextView
-	        android:layout_width="fill_parent"
-	        android:layout_height="wrap_content"
-	        android:textColor="#eee"
-	        android:layout_gravity="center"
-	        android:gravity="center"
-	        android:textSize="10sp"
-	        android:text="PCI[0]:1 RSRQ[0]:-7 RSRP[0]:-193 RSSI[0]:-82 RXLEV[0]:22" />
+	        android:text="-" />	  
+  -->	
    <Button
-            android:id="@+id/btnInfoSearch"
+            android:id="@+id/btnF3InfoSearch"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="采集信号" />
+            android:text="采集NB-IoT信号" />
          
  	<TextView
 	        android:layout_width="fill_parent"
@@ -426,7 +370,7 @@
 	        android:layout_gravity="center"
 	        android:gravity="center"
 	        android:textSize="15dp"
-	        android:text="Photo Capture And GPS Positioning:" />  
+	        android:text="采像和定位" />  
 
 	    <LinearLayout
         android:layout_width="fill_parent"

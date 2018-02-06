@@ -17,40 +17,101 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.fragment.ReportSignalInfo;
+import com.example.nb_iotutility.MainActivity;
 import com.example.nb_iotutility.MyImageView;
+import com.example.nb_iotutility.NBSignalPgsBar;
 import com.example.nb_iotutility.R;
 
 public class Fragment3 extends Fragment implements OnClickListener{
+	protected static final int SHOW_RESPONSE = 0;
 	private View curView;
 	SoundPool sp;
 	HashMap<Integer, Integer> spMap;
 	private MyImageView miv;
+	public MainActivity ma;
+	
 //	private static final int REQUEST_ENABLE_BT = 0;
 //	private static final int NET_READ_TIMEOUT_MILLIS = 0;
 //	private static final int NET_CONNECT_TIMEOUT_FILLIS = 0;
 //	private  BluetoothSocket mmSocket;
 //	private BluetoothAdapter mBluetoothAdapter;
+	
 	public String mmStrCmd;
 	public ReportSignalInfo rsi;
 	public String mStrMCC,mStrMNC,mStrTAC,mStrEARFCN,mStrGCELLID,mStrCAT,mStrSINR,mStrPCI,mStrRSRP,mStrRSRQ,mStrRSSI,mStrBAND;
+	private NBSignalPgsBar mNBSP_SINR,mNBSP_RSRP, mNBSP_RSRP2, mNBSP_RSSI, mNBSP_RSRQ;
+	private TextView m_tvEARFCN, m_tvPCI, m_tvPLMN, m_tvBAND, m_tvTAC, m_tvGCELLID, m_tvRAT, m_tvCAT;
+	private TextView m_tvLTEIntra, m_tvLTEInter;
+	
+	private Button btnQueryNBInfo;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {	
 		curView = inflater.inflate(R.layout.fragment3, null);
 		
         mmStrCmd = "";
-        mStrBAND=mStrMCC=mStrMNC=mStrTAC=mStrEARFCN=mStrGCELLID=mStrCAT=mStrSINR=mStrPCI=mStrRSRP=mStrRSRQ=mStrRSSI="";
+        mStrBAND=mStrMCC=mStrMNC=mStrTAC=mStrEARFCN=mStrGCELLID=mStrCAT=mStrSINR=mStrPCI=mStrRSRP=mStrRSRQ=mStrRSSI="0";
+        ma = (MainActivity) this.getActivity();
+		ma.fragmentTerminalHandler = new Handler()
+		{
 
+				@Override
+				public void handleMessage(Message msg) {
+	    			switch(msg.what){
+	    			case SHOW_RESPONSE:
+	    				String response = (String)msg.obj;
+	    				//tvMsgRes.setText(response);
+	    				//Toast.makeText(ma.getApplicationContext(), response, Toast.LENGTH_LONG).show();
+	    				
+	    				handle_msg_from_BT(response);
+	    				
+	    				break;
+	    			default:
+	    				break;
+	    				
+	    			}
+					super.handleMessage(msg);
+				}
+				
+		};
+		
+		btnQueryNBInfo = (Button) curView.findViewById(R.id.btnF3InfoSearch);
+		btnQueryNBInfo.setOnClickListener(this);
+		
+		/////////////////////////////////////////////////////////////////////////////
+		m_tvEARFCN = (TextView) curView.findViewById(R.id.tvF3EARFCN);
+		m_tvPCI = (TextView) curView.findViewById(R.id.tvF3PCI);
+		m_tvPLMN = (TextView) curView.findViewById(R.id.tvF3PLMN);
+		m_tvBAND = (TextView) curView.findViewById(R.id.tvF3BAND);
+		m_tvTAC = (TextView) curView.findViewById(R.id.tvF3TAC);
+		m_tvGCELLID = (TextView) curView.findViewById(R.id.tvF3GCELLID);
+		m_tvRAT = (TextView) curView.findViewById(R.id.tvF3RAT);
+		m_tvCAT = (TextView) curView.findViewById(R.id.tvF3CAT);
+		
+		m_tvLTEIntra = (TextView) curView.findViewById(R.id.tvLTEINTRA);
+		//m_tvLTEInter = (TextView) curView.findViewById(R.id.tvLTEINTER);
+		
+		mNBSP_RSRP = (NBSignalPgsBar) curView.findViewById(R.id.nbSPB_rsrp);
+		mNBSP_RSRP2 = (NBSignalPgsBar) curView.findViewById(R.id.nbSPB_rsrp2);
+		mNBSP_SINR = (NBSignalPgsBar) curView.findViewById(R.id.nbSPB_sinr);
+		mNBSP_RSSI = (NBSignalPgsBar) curView.findViewById(R.id.nbSPB_rssi);
+		mNBSP_RSRQ = (NBSignalPgsBar) curView.findViewById(R.id.nbSPB_rsrq);
+		
+		
 		//ImageButton imgBtn = (ImageButton) curView.findViewById(R.id.img_btn_scan);
 		//imgBtn.setOnClickListener((OnClickListener) this);
 		//InitSound();
@@ -61,219 +122,137 @@ public class Fragment3 extends Fragment implements OnClickListener{
 		
 		return curView;
 	}
-	
-	/*
-	public void InitBluetooth(){
-        ///BT TEST
-        
-        Log.d("ARIC","onCreate:Begin get default adapter.");
-        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        
-        if(mBluetoothAdapter == null){
-        	//Device not support bluetooth.
-        	Log.d("ARIC","Device not support bluetooth.");
-        }else{
-        	Log.d("ARIC","Device support bluetooth.");
-        }
-        
-        if(!mBluetoothAdapter.isEnabled()){
-        	Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-        	startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-        }
-        
-		//Query paired devices.
-		Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
-		 // If there are paired devices
-		 if (pairedDevices.size() > 0) {
-		     // Loop through paired devices
-			 for (BluetoothDevice device : pairedDevices) {
-			     // Add the name and address to an array adapter to show in a ListView
-			 //mArrayAdapter.add(device.getName() + "\n" + device.getAddress());
-			 Log.d("ARIC", device.getName() + "==>> " + device.getAddress());
-			 if(device.getName().equalsIgnoreCase("TM-770")){ //("HUAWEI U8818")){
-				  //ConnectThread connectBtThread = new ConnectThread(device);
-				  //connectBtThread.start();
-				  Log.e("ARIC", "Found HUAWEI U8818");
-			    	 }
-			     }
-		 }
-		 //10:C6:1F:57:2F:F1
-		 //GUID:24c71ae4-27e4-4194-b6b1-1fb27f962887
-		BluetoothDevice device = mBluetoothAdapter.getRemoteDevice("00:06:69:00:1D:A6");//("10:C6:1F:57:2F:F1");
-		ConnectThread connectBtThread = new ConnectThread(device);
-		connectBtThread.start();	
+	private void handle_msg_from_BT(String recvMsg)
+	{
 		
-	}
-	*/
-/*	
-	private class RecvThread extends Thread {
-		private int count;
-		public RecvThread(){
-			count =0;
+		mmStrCmd=mmStrCmd + recvMsg;
+		String ret="";
+		ret = ParseLineInfo(recvMsg, ".*EARFCN:(.+)GCELLID");
+		if(ret != "NA")
+		{ 
+			mStrEARFCN = ret;
+			Log.e("ARIC","RECV:"+ret);
 		}
-
-		@Override
-		public void run() {
-			// TODO Auto-generated method stub
-			InputStream in = null;
-			try {
-				in = mmSocket.getInputStream();
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			
-			while(mmSocket.isConnected()){
-				byte[] buffer = new byte[1024];					
-				int temp=0;
-				
-				if(count == 0){
-					try {
-						count = in.available();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-				
-				if( count !=0 ){
-					byte[] bt = new byte[count];
-					int readCount = 0;
-					while(readCount < count){
-						try {
-							readCount += in.read(bt, readCount, count-readCount);
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
-					String xx = new String(bt);
-					Log.d("ARIC", xx);
-					////Parse Information.
-					String ret;
-					mStrEARFCN = ret = ParseLineInfo(xx, ".*(EARFCN:.+)GCELLID");
-					
-					Log.e("ARIC","RECV:"+ret);
-					mStrGCELLID = ret = ParseLineInfo(xx, ".*(GCELLID:.+)TAC");
-					Log.e("ARIC","RECV:"+ret);
-					mStrMCC = ret = ParseLineInfo(xx, ".*(TAC:.+)MCC");
-					Log.e("ARIC","RECV:"+ret);
-					mStrMCC = ret = ParseLineInfo(xx, ".*(MCC:.+)MNC");
-					Log.e("ARIC","RECV:"+ret);
-					mStrMNC = ret = ParseLineInfo(xx, ".*(MNC:.+)DLBW");
-					Log.e("ARIC","RECV:"+ret);
-					mStrSINR = ret = ParseLineInfo(xx, ".*(SINR:.+)CAT");
-					Log.e("ARIC","RECV:"+ret);
-					mStrCAT = ret = ParseLineInfo(xx, ".*(CAT:.+)BAND");
-					Log.e("ARIC","RECV:"+ret);
-					mStrBAND = ret = ParseLineInfo(xx, ".*(BAND:.+)PCI");
-					Log.e("ARIC","RECV:"+ret);
-					mStrPCI = ret = ParseLineInfo(xx, ".*(PCI:.+)RSRP");
-					Log.e("ARIC","RECV:"+ret);
-					mStrRSRP = ret = ParseLineInfo(xx, ".*(RSRP:.+)RSRQ");
-					Log.e("ARIC","RECV:"+ret);
-					mStrRSSI = ret = ParseLineInfo(xx, ".*(RSSI:.+)[\r|\n| ]");
-					Log.e("ARIC","RECV:"+ret);
-					playSound(2,0);
-					count =0;
-				}
-				
-				//byte[] ttmp = new byte[temp];
-				//System.arraycopy(buffer,0,ttmp,0,temp);
-				//String ssRecv = new String(ttmp);
-				//Log.d("ARIC",ssRecv);
-				
-				try {
-					Thread.sleep(200,10);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
+		ret = ParseLineInfo(recvMsg, ".*GCELLID:(.+)TAC");
+		//Log.e("ARIC","RECV:"+ret);
+		if(ret != "NA")
+		{ 
+			mStrGCELLID = ret;
+			Log.e("ARIC","RECV:"+ret);
 		}
 		
-	}
-	*/
-	
-/*	
-private class ConnectThread extends Thread{
+		ret = ParseLineInfo(recvMsg, ".*TAC:(.+)MCC");
+		if(ret != "NA")
+		{ 
+			mStrTAC = ret;
+			Log.e("ARIC","RECV:"+ret);
+		}
 		
-		private  BluetoothDevice mmDevice;
-		private int count;
+		ret = ParseLineInfo(recvMsg, ".*MCC:(.+)MNC");
+		if(ret != "NA")
+		{ 
+			mStrMCC = ret;
+			Log.e("ARIC","RECV:"+ret);
+		}
 		
-		public ConnectThread(BluetoothDevice device)
+		ret = ParseLineInfo(recvMsg, ".*MNC:(.+)DLBW");
+		if(ret != "NA")
+		{ 
+			mStrMNC = ret;
+			Log.e("ARIC","RECV:"+ret);
+		}
+		
+		ret = ParseLineInfo(recvMsg, ".*SINR:(.+)CAT");
+		if(ret != "NA")
+		{ 
+			mStrSINR = ret;
+			Log.e("ARIC","RECV:"+ret);
+		}
+		
+		ret = ParseLineInfo(recvMsg, ".*CAT:(.+)BAND");
+		if(ret != "NA")
+		{ 
+			mStrCAT = ret;
+			Log.e("ARIC","RECV:"+ret);
+		}
+		
+		ret = ParseLineInfo(recvMsg, ".*BAND:(.+)PCI");
+		if(ret != "NA")
+		{ 
+			mStrBAND = ret;
+			Log.e("ARIC","RECV:"+ret);
+		}
+		
+		ret = ParseLineInfo(recvMsg, ".*PCI:(.+)RSRP");
+		if(ret != "NA")
+		{ 
+			mStrPCI = ret;
+			Log.e("ARIC","RECV:"+ret);
+		}
+		
+		ret = ParseLineInfo(recvMsg, ".*RSRP:(.+)RSRQ");
+		if(ret != "NA")
+		{ 
+			mStrRSRP = ret;
+			Log.e("ARIC","RECV:"+ret);
+		}
+		ret = ParseLineInfo(recvMsg, ".*RSRQ:(.+)RSSI");
+		if(ret != "NA")
+		{ 
+			mStrRSRQ = ret;
+			Log.e("ARIC","RECV:"+ret);
+		}
+		
+		ret = ParseLineInfo(recvMsg, ".*RSSI:(.+)[\r|\n| ]");
+		if(ret != "NA")
+		{ 
+			mStrRSSI = ret;
+			Log.e("ARIC","RECV:"+ret);
+		}
+		
+		int pFind = mmStrCmd.indexOf("LTE INTRA INFO:");
+		if(pFind>0)
 		{
-			//Use a temporary object that is later assigned.
-			
-			BluetoothSocket tmp = null;
-			mmDevice = device;
-			count=0;
-			
-			try {
-				tmp = device.createRfcommSocketToServiceRecord(UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")); //24c71ae4-27e4-4194-b6b1-1fb27f962887"));
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			mmSocket = tmp;
+			m_tvLTEIntra.setText(mmStrCmd.substring(pFind));
 		}
 		
-		public void run() {
-			// TODO Auto-generated method stub
-			try {
-				mmSocket.connect();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				try {
-					mmSocket.close();
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			}
-			
-			new RecvThread().start();
-			
-			OutputStream os = null;
-			//InputStream in = null;
-			
-			try {
-				 os = mmSocket.getOutputStream();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}		
-			
-			while(true)
-			{
-				if(mmStrCmd !="")
-				{
-					byte[] data_tx=mmStrCmd.getBytes();
-					try {
-						os.write(data_tx);
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					//mmTVInfo.setText("Finished CMD:"+mmStrCmd);
-					Log.d("ARIC","Finished CMD:"+mmStrCmd);
-					//Toast.makeText(getApplicationContext(), "Finished CMD:"+mmStrCmd, Toast.LENGTH_LONG).show();
-					mmStrCmd="";
-				}
-					
-				try {
-					Thread.sleep(300,30);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			
-		}
+//		ret = ParseLineInfo(mmStrCmd, ".*INTER INFO:(.+)OK");
+//		if(ret != "NA")
+//		{ 
+//			m_tvLTEInter.setText(ret);
+//			Log.e("ARIC","RECV:"+ret);
+//		}
+		
+		 //m_tvEARFCN, m_tvPCI, m_tvPLMN, m_tvBAND, m_tvTAC, m_tvGCELLID, m_tvRAT, m_tvCAT;
+		m_tvEARFCN.setText(mStrEARFCN);
+		m_tvPCI.setText(mStrPCI);
+		m_tvPLMN.setText(mStrMCC+"/"+mStrMNC);
+		m_tvBAND.setText(mStrBAND);
+		m_tvTAC.setText(mStrTAC);
+		m_tvGCELLID.setText(mStrGCELLID);
+		m_tvRAT.setText("GPRS");
+		m_tvCAT.setText(mStrCAT);
+		
+		float fRSRP = Float.parseFloat(mStrRSRP) + 140; // -140~ -40  (0-100)
+		mNBSP_RSRP.setText(mStrRSRP); mNBSP_RSRP2.setText(mStrRSRP);
+		mNBSP_RSRP.setPercent(fRSRP); mNBSP_RSRP2.setPercent(fRSRP);
+		
+		float fRSRQ = Float.parseFloat(mStrRSRQ) + 20; // -20~-3  (0-17)
+		mNBSP_RSRQ.setText(mStrRSRQ); 
+		mNBSP_RSRQ.setPercent((float) (fRSRQ*100/17.0));
+
+		float fRSSI = Float.parseFloat(mStrRSSI) + 120; // -120~0(-120~-40)  (0-80)
+		mNBSP_RSSI.setText(mStrRSSI); 
+		mNBSP_RSSI.setPercent((float) (fRSSI*100/80.0));
+
+		float fSINR = Float.parseFloat(mStrSINR) + 10; // -10~40 (0-50)
+		mNBSP_SINR.setText(mStrSINR); 
+		mNBSP_SINR.setPercent((float) (fSINR*100/50.0));
+		
+		
 		
 	}
-*/	
+	
 	public void InitSound(){
 		sp = new SoundPool(5, AudioManager.STREAM_MUSIC,0);
 		spMap = new HashMap<Integer, Integer>();
@@ -290,16 +269,28 @@ private class ConnectThread extends Thread{
 
 	public void onClick(View arg0) {
 		// TODO Auto-generated method stub
+
+		switch(arg0.getId())
+		{
+		case R.id.btnF3InfoSearch:
+			ma.bis.sendCmd("@#at+lscellinfo#@\r\n");
+			Log.d("ARIC",mmStrCmd);
+			mmStrCmd = "";
+			
+			break;
+		default:
+			break;
+		}
 		
-		mmStrCmd="INDEX\r\n";
+//		mmStrCmd="INDEX\r\n";
 		
-		Toast.makeText(this.getActivity().getApplicationContext(), "Send scan signal!", Toast.LENGTH_LONG).show();
-        rsi.setDevName("NB-PoC001","ERICSSON SH WILD-C","31.2364733460","121.3627737870");
-        rsi.setNetworkInfo(mStrMCC,mStrMNC, mStrTAC, mStrGCELLID, mStrSINR, mStrRSRP, mStrRSRQ, mStrRSSI);
-        rsi.setPHY(mStrBAND, mStrEARFCN, mStrCAT, mStrPCI);
-        rsi.setEPS("0.0.0.0", "Pending");		
-        rsi.sendRequestWithHttpClient();
-		miv.play();
+//		Toast.makeText(this.getActivity().getApplicationContext(), "Send scan signal!", Toast.LENGTH_LONG).show();
+//        rsi.setDevName("NB-PoC001","ERICSSON SH WILD-C","31.2364733460","121.3627737870");
+//        rsi.setNetworkInfo(mStrMCC,mStrMNC, mStrTAC, mStrGCELLID, mStrSINR, mStrRSRP, mStrRSRQ, mStrRSSI);
+//        rsi.setPHY(mStrBAND, mStrEARFCN, mStrCAT, mStrPCI);
+//        rsi.setEPS("0.0.0.0", "Pending");		
+//        rsi.sendRequestWithHttpClient();
+//		miv.play();
 	}
 	public String ParseLineInfo(String line, String regex_str) {
 		// TODO Auto-generated method stub
