@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" 
+    android:background="#333">
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#eee"
+        android:textSize="22sp"
+        android:text="Export Mode(专家模式)" />
+
+    <TextView
+        android:id="@+id/deviceResBox"
+        android:layout_width="fill_parent"
+        android:layout_height="180sp"
+        android:background="#000"
+        android:textColor="#55ee22"
+        android:text="ERICSSON" />
+    <TextView
+        android:id="@+id/textView11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#eee"
+        android:textSize="10sp"
+        android:text="(Direct send AT commands to module.)" />
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal" >
+					<EditText
+		            android:id="@+id/etCmdToSend"
+		            android:layout_width="fill_parent"
+		            android:layout_height="wrap_content"
+		            android:layout_weight="1"
+		            android:text="INDEX"
+		            android:textColor="#3211dd"
+		            android:background="#1b1b1b"
+		             > 
+					</EditText>
+        <Button
+            android:id="@+id/btnSentAT2BT"
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:layout_weight="2"
+            android:text="发送命令" />
+    </LinearLayout>
+			<Button
+            android:id="@+id/btnSelBT"
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:text="选择AT命令>>" />
+
+			<TableLayout
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"
+			     >
+
+			    <TableRow
+			        android:id="@+id/tableRow1"
+			        android:layout_width="fill_parent"
+			        android:layout_gravity="center"
+			        android:layout_height="wrap_content" >
+
+
+			<Button
+			android:id="@+id/btnStartPPP"
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:text="启动PPP" />
+			<Button
+			android:id="@+id/btnStopPPP"
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:text="关闭PPP" />
+
+			<Button
+			    android:id="@+id/btnManualSelNet"
+			    android:layout_width="fill_parent"
+			    android:layout_height="50dp"
+			    android:layout_weight="1"
+			    android:text="手工选网" />
+			    </TableRow>
+
+			    <TableRow
+			        android:id="@+id/tableRow2"
+			        android:layout_gravity="center"
+			        android:layout_width="fill_parent"
+			        android:layout_height="wrap_content" >
+			<Button
+			android:id="@+id/btnEnableScrambing"
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:text="打开扰码" />
+			<Button
+			android:id="@+id/btnDisableScrambing"
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:text="关闭扰码" />
+			<Button
+			android:id="@+id/btnSendPWR"
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:text="模组电源" />
+
+			    </TableRow>
+
+			</TableLayout>
+     <TextView
+        android:id="@+id/textView11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#eee"
+        android:textSize="20sp"
+        android:text="(提醒:扰码配置需重新上电。)" />   
+</LinearLayout>
