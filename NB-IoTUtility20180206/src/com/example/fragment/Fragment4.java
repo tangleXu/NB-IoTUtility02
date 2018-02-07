@@ -31,7 +31,7 @@ import com.example.nb_iotutility.R;
 		WebSettings webSettings = myWebView.getSettings();
 		webSettings.setJavaScriptEnabled(true);
 		
-		myWebView.loadUrl("http://58.247.178.229:8088/b_map.html");
+		myWebView.loadUrl("http://58.247.178.229:8088/search_report.html");
 		 
 		 return cur_view;
 	}	

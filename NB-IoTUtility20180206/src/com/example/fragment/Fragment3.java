@@ -42,6 +42,7 @@ import android.widget.Toast;
 import android.app.Activity;
 
 import com.example.fragment.ReportSignalInfo;
+import com.example.nb_iotutility.BaiduMapActivity;
 import com.example.nb_iotutility.MainActivity;
 import com.example.nb_iotutility.MyImageView;
 import com.example.nb_iotutility.NBSignalPgsBar;
@@ -51,6 +52,7 @@ public class Fragment3 extends Fragment implements OnClickListener{
 	protected static final int SHOW_RESPONSE = 0;
 	private static final int RESULT_OK = -1;
 	private static final int REQUEST_ORIGINAL = 0;
+	private static final int REQUEST_GPS = 8;
 	private View curView;
 	SoundPool sp;
 	HashMap<Integer, Integer> spMap;
@@ -65,7 +67,7 @@ public class Fragment3 extends Fragment implements OnClickListener{
 //	private static final int NET_CONNECT_TIMEOUT_FILLIS = 0;
 //	private  BluetoothSocket mmSocket;
 //	private BluetoothAdapter mBluetoothAdapter;
-	
+	public String sLng,sLat;
 	public String mmStrCmd;
 	public ReportSignalInfo rsi;
 	public String mStrMCC,mStrMNC,mStrTAC,mStrEARFCN,mStrGCELLID,mStrCAT,mStrSINR,mStrPCI,mStrRSRP,mStrRSRQ,mStrRSSI,mStrBAND;
@@ -78,7 +80,7 @@ public class Fragment3 extends Fragment implements OnClickListener{
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {	
 		curView = inflater.inflate(R.layout.fragment3, null);
-		
+		sLng=sLat="";
         mmStrCmd = "";
         mStrBAND=mStrMCC=mStrMNC=mStrTAC=mStrEARFCN=mStrGCELLID=mStrCAT=mStrSINR=mStrPCI=mStrRSRP=mStrRSRQ=mStrRSSI="0";
         ma = (MainActivity) this.getActivity();
@@ -142,7 +144,6 @@ public class Fragment3 extends Fragment implements OnClickListener{
 		//ImageButton imgBtn = (ImageButton) curView.findViewById(R.id.img_btn_scan);
 		//imgBtn.setOnClickListener((OnClickListener) this);
 		//InitSound();
-		//InitBluetooth();
 		
 		//miv = (MyImageView) curView.findViewById(R.id.myImgView01);
 		rsi = new ReportSignalInfo(ma);
@@ -314,7 +315,15 @@ public class Fragment3 extends Fragment implements OnClickListener{
 			break;
 		case R.id.btnF3Positioning:
 			//TODO: Tomorrow.
-			
+	        Intent intent = new Intent(ma, BaiduMapActivity.class);
+	        
+	        Bundle bundle = new Bundle();  
+	        bundle.putString("GPS", "Get GPS Info");  
+	  
+	        intent.putExtras(bundle);  
+	  
+	        // 参数 REQUEST_ONE ：请求依据，作为在onActivityResult做处理时识别码  
+	        startActivityForResult(intent, REQUEST_GPS);			
 			break;
 		case R.id.btnF3Upload:
 			Toast.makeText(this.getActivity().getApplicationContext(), "Send scan signal!", Toast.LENGTH_LONG).show();
@@ -376,8 +385,13 @@ public class Fragment3 extends Fragment implements OnClickListener{
 			          //bitmap.recycle();
 			        }finally{ 
 			        } 
-			    
+			    		        
 			    } 
+           if (requestCode == REQUEST_GPS) {
+               sLng = data.getStringExtra("LNG");
+               sLat = data.getStringExtra("LAT");
+
+           }
 		   
 	}
 	public Bitmap getBitmapByWidth(String localImagePath, int width, int addedScaling) {

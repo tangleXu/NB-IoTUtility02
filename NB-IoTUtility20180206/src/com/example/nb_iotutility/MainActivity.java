@@ -38,6 +38,8 @@ public class MainActivity<Content> extends FragmentActivity implements OnBtInter
 	public String btRecv;
 	public Boolean m_bBTstatus=false;
 	private Content content;
+	
+	
 	/**
 	 * FragmentTabhost
 	 */
@@ -67,7 +69,7 @@ public class MainActivity<Content> extends FragmentActivity implements OnBtInter
 	 * 选修卡文字
 	 * 
 	 */
-	private String mTextArray[] = { "首页", "配置", "终端", "地图", "更多" };
+	private String mTextArray[] = { "首页", "配置", "终端", "查询记录", "更多" };
 	/**
 	 * 
 	 * 
@@ -76,6 +78,8 @@ public class MainActivity<Content> extends FragmentActivity implements OnBtInter
 	public Handler fragmentHandler;
 	public Handler fragmentExpertHandler;
 	public Handler fragmentTerminalHandler;
+	public Handler fragmentCfgHandler;
+	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 	    this.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -92,6 +96,7 @@ public class MainActivity<Content> extends FragmentActivity implements OnBtInter
 		fragmentHandler = null;
 		fragmentExpertHandler = null;
 		fragmentTerminalHandler = null;
+		fragmentCfgHandler = null;
 		
         handler = new Handler() {
 
@@ -222,6 +227,11 @@ public class MainActivity<Content> extends FragmentActivity implements OnBtInter
 			{
 				if(fragmentTerminalHandler != null)
 					fragmentTerminalHandler.sendMessage(msg);
+				
+			}else if(tabIdx == 1)
+			{
+				if(fragmentCfgHandler != null)
+					fragmentCfgHandler.sendMessage(msg);
 				
 			}
 			else

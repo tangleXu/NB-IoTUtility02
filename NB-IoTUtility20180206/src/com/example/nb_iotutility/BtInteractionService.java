@@ -117,11 +117,11 @@ public class BtInteractionService {
                     	bt_mac_addr = name_addr[1];
                     	//Toast.makeText((Context) callback, "Choice:" + name_addr[0]+bt_mac_addr, Toast.LENGTH_SHORT).show();
                         dialog.dismiss();
-                        
+                        if(!bt_mac_addr.isEmpty()){
                         BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(bt_mac_addr);
                 		ConnectThread connectBtThread = new ConnectThread(device);
                 		connectBtThread.start();
-                		
+                        }
                     }
                 }).create();
         dialog.show();

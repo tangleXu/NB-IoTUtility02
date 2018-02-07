@@ -55,7 +55,6 @@ public class Fragment1 extends Fragment implements OnClickListener{
     					tvStatus.setText("蓝牙已连接");
     					btnConnectBT.setText("断开设备");
     			    }
-    					
     				
     				break;
     			default:
