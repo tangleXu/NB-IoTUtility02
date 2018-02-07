@@ -319,7 +319,7 @@
 				            android:layout_weight="1"
 				            android:textColor="#bbb"
 				            android:textSize="12sp"
-				            android:text="LTE CatM1 and NB" />
+				            android:text="LTE CatM1和NB" />
 				    </LinearLayout>
      		</LinearLayout>
      		
@@ -386,14 +386,14 @@
 		                    android:textSize="12sp"
 		                    android:text="接收数据:" />
 		                <TextView
-		                    android:id="@+id/etF2TCPRecvMsg"
+		                    android:id="@+id/tvF2TCPRecvMsg"
 		                    android:layout_width="fill_parent"
-		                    android:layout_height="60dp"
+		                    android:layout_height="80dp"
 		                    android:layout_weight="1"
-		                    android:textColor="#ddd"
+		                    android:textColor="#2d9"
 		                    android:background="#222"
 		                    android:textSize="12sp"
-		                    android:text="" />      
+		                    android:text="RX DATA" />      
 		                <TextView
 		                    android:layout_width="fill_parent"
 		                    android:layout_height="wrap_content"
@@ -475,7 +475,7 @@
 		                    android:layout_width="fill_parent"
 		                    android:layout_height="wrap_content"
 		                    android:layout_weight="1"
-		                    android:textColor="#ddd"
+		                    android:textColor="#2d9"
 		                    android:textSize="12sp"
 		                    android:text="PORT:" />
 		                <EditText
@@ -503,12 +503,12 @@
 		                <TextView
 		                    android:id="@+id/tvF2UDPRxData"
 		                    android:layout_width="fill_parent"
-		                    android:layout_height="60dp"
+		                    android:layout_height="80dp"
 		                    android:layout_weight="1"
-		                    android:textColor="#ddd"
+		                    android:textColor="#2d9"
 		                    android:background="#222"
 		                    android:textSize="12sp"
-		                    android:text="" />      
+		                    android:text="RX DATA" />      
 		                <TextView
 		                    android:layout_width="fill_parent"
 		                    android:layout_height="wrap_content"
@@ -523,7 +523,7 @@
 				            android:layout_weight="1"
 				            android:textSize="12sp"
 				            android:background="#222"
-				            android:textColor="#ddccbb"
+				            android:textColor="#ddcc22"
 				            android:text="TX DATA"
 				             > 
 							</EditText>  

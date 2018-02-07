@@ -26,6 +26,8 @@ public class Fragment2 extends Fragment implements OnClickListener{
 	private Button mBtnGroup[] = new Button[25];
 	private EditText mEtPLMN, mEtAPN, mEtTCPServer, mEtTCPPort, mEtUdpServer, mEtUdpPort,mEtTcpTx,mEtUdpTx;
 	private TextView mTvTcpRecv, mTvUdpRecv;
+	private Boolean m_bIsTCPConnect = false;
+	private Boolean m_bIsUDPConnect = false;
 	
 	private String eDRX_items[] = {"AT+EDRXRDP", "AT+EDRXS=0", "AT+EDRXS=1,5,\"0000\"",
 			"AT+EDRXS=1,5,\"0001\"","AT+EDRXS=1,5,\"0010\"","AT+EDRXS=1,5,\"0011\"","AT+EDRXS=1,5,\"0100\"",
@@ -46,6 +48,15 @@ public class Fragment2 extends Fragment implements OnClickListener{
 		mEtPLMN = (EditText) mP2View.findViewById(R.id.etF2PLMN);
 		mEtAPN = (EditText) mP2View.findViewById(R.id.etF2APN);
 		
+		mEtTCPServer = (EditText) mP2View.findViewById(R.id.etF2TCPServerIP);
+		mEtTCPPort = (EditText) mP2View.findViewById(R.id.etF2TCPServerPORT);
+		mEtUdpServer = (EditText) mP2View.findViewById(R.id.etF2UDPServerIP);
+		mEtUdpPort = (EditText) mP2View.findViewById(R.id.etF2UDPPort);
+		mEtTcpTx = (EditText) mP2View.findViewById(R.id.etF2TCPTxData);
+		mEtUdpTx = (EditText) mP2View.findViewById(R.id.etF2UDPTxData);
+		
+		mTvUdpRecv = (TextView) mP2View.findViewById(R.id.tvF2UDPRxData);
+		mTvTcpRecv = (TextView) mP2View.findViewById(R.id.tvF2TCPRecvMsg);
 		//mBtnAttach = (Button) mP2View.findViewById(R.id.btnF2Attach);
 		
 		
@@ -117,7 +128,17 @@ public class Fragment2 extends Fragment implements OnClickListener{
     			switch(msg.what){
     			case SHOW_RESPONSE:
     				String response = (String)msg.obj;
-    				Toast.makeText(ma, response, Toast.LENGTH_SHORT).show();
+    				
+    				if(m_bIsTCPConnect)
+    				{
+    					mTvTcpRecv.setText(response);
+    				}else if(m_bIsUDPConnect)
+    				{
+    					mTvUdpRecv.setText(response);
+    				}else
+    				{
+    					Toast.makeText(ma, response, Toast.LENGTH_SHORT).show();
+    				}
     				
     				break;
     			default:
@@ -269,16 +290,62 @@ public class Fragment2 extends Fragment implements OnClickListener{
 			ma.bis.sendCmd("@#AT+LTEOPMOD=3#@\r\n");
 			break;
 		case	R.id.btnF2TCPConnect:
+			Button btn2 = (Button) arg0;
+			if(m_bIsTCPConnect == false)
+			{
+				ma.bis.sendCmd("@#AT+LSIPCALL=1#@\r\n");
+				ma.bis.sendCmd("@#AT+LSIPCALL?#@\r\n");
+				atCmd="@#AT+LSIPOPEN=1,6000,\"" + mEtTCPServer.getText().toString().trim() +"\"," + 
+				mEtTCPPort.getText().toString().trim() + ",0#@\r\n";
+				ma.bis.sendCmd(atCmd);
+				btn2.setText("断开");
+				m_bIsTCPConnect = true;
+			}else
+			{
+				ma.bis.sendCmd("@#AT+LSIPCLOSE=1#@\r\n");
+				ma.bis.sendCmd("@#AT+LSIPCALL=0#@\r\n");
+				btn2.setText("连接");
+				m_bIsTCPConnect = false;
+			}
+			//mTvTcpRecv.setText(text);
 			//TODO:
 			break;
 		case	R.id.btnF2TCPSend:
 			//TODO:
+			if(m_bIsTCPConnect)
+			{
+				atCmd="@#AT+LSIPSEND=1,\"" +mEtTcpTx.getText().toString().trim() + "\"#@\r\n";
+				ma.bis.sendCmd(atCmd);
+				ma.bis.sendCmd("@#AT+LSIPUSH=1#@\r\n");
+			}
+			
 			break;
 		case	R.id.btnF2UDPConnect:
-			//TODO:
+			Button btn1 = (Button) arg0;
+			if(m_bIsUDPConnect == false)
+			{
+				ma.bis.sendCmd("@#AT+LSIPCALL=1#@\r\n");
+				ma.bis.sendCmd("@#AT+LSIPCALL?#@\r\n");
+				atCmd="@#AT+LSIPOPEN=1,6000,\"" + mEtUdpServer.getText().toString().trim() +"\"," + 
+				mEtUdpPort.getText().toString().trim() + ",1#@\r\n";
+				ma.bis.sendCmd(atCmd);
+				btn1.setText("断开");
+				m_bIsUDPConnect = true;
+			}else
+			{
+				
+				btn1.setText("连接");
+				m_bIsUDPConnect = false;
+			}
 			break;
 		case	R.id.btnF2UDPSend:
 			//TODO:
+			if(m_bIsUDPConnect)
+			{
+				atCmd="@#AT+LSIPSEND=1,\"" +mEtUdpTx.getText().toString().trim() + "\"#@\r\n";
+				ma.bis.sendCmd(atCmd);
+				ma.bis.sendCmd("@#AT+LSIPUSH=1#@\r\n");				
+			}
 				break;
 		default:
 			break;
